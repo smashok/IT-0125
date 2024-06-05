@@ -1,0 +1,26 @@
+path: C:/Users/Anton/Desktop/LogoDetectionYOLOv8/code/data
+train: test_images/train
+val: test_images/train
+
+names:
+  0: apple
+  1: cocacola
+  2: mcdonalds
+  3: tnf
+  4: toyota
+
+
+
+
+augment:
+    enable: True
+    conf: 0.5  # Увеличьте вероятность применения аугментаций
+    degrees: 10  # Разброс для поворота в градусах
+    translate: 0.1  # Разброс для смещения
+    scale: 0.2  # Разброс для масштабирования
+    shear: 0.1  # Разброс для сдвига
+    perspective: 0.1  # Разброс для перспективы
+    flipud: True  # Включить вертикальное отражение
+    fliplr: True  # Включить горизонтальное отражение
+    mosaic: 0.2  # Вероятность использования мозаичной аугментации
+    mixup: 0.2  # Вероятность использования mixup
