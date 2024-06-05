@@ -11,27 +11,27 @@ class User:
     def __init__(self, name, email):
         self.name = name
         self.email = email
-        self.processed_photos = 0  # Счетчик обработанных фотографий
+        self.processed_photos = 0
 
 class PhotoProcessingApp(QMainWindow):
     def __init__(self):
         super(PhotoProcessingApp, self).__init__()
 
-        self.users = []  # Список зарегистрированных пользователей
-        self.processed_image = None  # Переменная для хранения обработанного изображения
+        self.users = []
+        self.processed_image = None
 
         self.initUI()
 
     def initUI(self):
         self.setWindowTitle('Photo Processing App')
-        self.setWindowState(Qt.WindowMaximized)  # Устанавливаем окно во весь экран при запуске
+        self.setWindowState(Qt.WindowMaximized)
 
         self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
 
         self.stacked_widget = QStackedWidget(self.central_widget)
 
-        # Добавляем виджеты для окна входа, окна регистрации и основного окна
+
         self.login_widget = self.create_login_widget()
         self.register_widget = self.create_register_widget()
         self.main_widget = self.create_main_widget()
@@ -44,12 +44,12 @@ class PhotoProcessingApp(QMainWindow):
         self.central_layout.addWidget(self.stacked_widget)
         self.central_widget.setLayout(self.central_layout)
 
-        self.user = None  # Данные о текущем пользователе
+        self.user = None
 
-        # Загружаем зарегистрированных пользователей из файла
+
         self.load_users()
 
-        # Отображаем окно входа при запуске приложения
+
         self.stacked_widget.setCurrentWidget(self.login_widget)
 
     def create_login_widget(self):
@@ -132,7 +132,7 @@ class PhotoProcessingApp(QMainWindow):
         self.user_info_label = QLabel(self)
         main_layout.addWidget(self.user_info_label)
 
-        self.label = QLabel(self)  # Добавляем QLabel для отображения обработанных изображений
+        self.label = QLabel(self)
         main_layout.addWidget(self.label)
 
         process_button = QPushButton('Process Photo', self)
@@ -182,7 +182,7 @@ class PhotoProcessingApp(QMainWindow):
                     user.processed_photos = user_data.get('processed_photos', 0)
                     self.users.append(user)
         except FileNotFoundError:
-            pass  # Если файл не существует, просто проигнорируем
+            pass
 
     def save_users(self):
         with open('users.json', 'w') as file:
@@ -214,7 +214,7 @@ class PhotoProcessingApp(QMainWindow):
             self.user = User(name, email)
             self.setWindowTitle(f'Photo Processing App - {self.user.name}')
             self.users.append(self.user)
-            self.save_users()  # Сохраняем данные о пользователе в файл
+            self.save_users()
             self.show_main_window()
         else:
             QMessageBox.warning(self, 'Registration Error', 'Please enter your name and email.')
@@ -224,20 +224,20 @@ class PhotoProcessingApp(QMainWindow):
             QMessageBox.warning(self, 'User Not Logged In', 'Please log in or register before processing photos.')
             return
 
-        # Получаем путь к изображению
+
         image_path, _ = QFileDialog.getOpenFileName(self, 'Open Image File', '', 'Images (*.png *.jpg *.jpeg *.bmp)')
 
         if image_path:
-            self.last_image_path = image_path  # Сохраняем путь к последнему открытому изображению
+            self.last_image_path = image_path
             result, result_without_boxes = perform_object_detection(image_path, return_result_without_boxes=True)
             self.processed_image = result_without_boxes  # Сохраняем обработанное изображение без рамок
             self.show_result(result)
 
-            # Увеличиваем счетчик обработанных фотографий для текущего пользователя
-            self.user.processed_photos += 1
-            self.save_users()  # Сохраняем обновленные данные в файл
 
-            # Обновляем информацию в окне профиля пользователя
+            self.user.processed_photos += 1
+            self.save_users()
+
+
             self.show_main_window()
 
     def save_photo(self):
@@ -245,19 +245,19 @@ class PhotoProcessingApp(QMainWindow):
             QMessageBox.warning(self, 'No Image', 'There is no processed image to save.')
             return
 
-        # Открываем диалоговое окно для выбора пути сохранения файла
+
         save_path, _ = QFileDialog.getSaveFileName(self, 'Save Image', '', 'Images (*.png *.jpg *.jpeg *.bmp)')
         if save_path:
-            # Сохраняем изображение
+
             cv2.imwrite(save_path, self.processed_image)
             QMessageBox.information(self, 'Image Saved', 'The image has been saved successfully.')
 
     def show_result(self, result):
-        # Задаем фиксированный размер для отображения изображений
+
         fixed_width = 800
         fixed_height = 600
 
-        # Масштабируем изображение до заданного размера
+
         result = cv2.resize(result, (fixed_width, fixed_height))
 
         height, width, channel = result.shape
@@ -265,7 +265,7 @@ class PhotoProcessingApp(QMainWindow):
         qImg = QImage(result.data, width, height, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
         pixmap = QPixmap.fromImage(qImg)
 
-        # Отображаем изображение в QLabel
+
         self.label.setPixmap(pixmap)
         self.label.setFixedSize(fixed_width, fixed_height)  # Устанавливаем фиксированный размер для QLabel
         self.label.setAlignment(Qt.AlignCenter)
